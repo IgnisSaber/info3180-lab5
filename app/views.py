@@ -43,16 +43,10 @@ def login():
         
         user = UserProfile.query.filter_by(username=username).first()
         if user is not None and check_password_hash(user.password, password):
-            remember_me = False
-
-            if 'remember_me' in request.form:
-                remember_me = True
-
-            login_user(user, remember=remember_me)
-    
+            login_user(user)
             flash('Logged in successfully.', 'success')
 
-            return redirect(url_for('secure-page'))
+            return redirect(url_for('secure_page'))
         
         #if form.username.data:
             # Get the username and password values from the form.
@@ -98,6 +92,12 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
+
+
+@app.route('/secure_page')
+@login_required
+def secure_page():
+    return render_template('secure_page.html')
 
 
 @app.errorhandler(404)
